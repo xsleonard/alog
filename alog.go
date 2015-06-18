@@ -63,7 +63,13 @@ func (a *Log) WithError(err error) *Log {
 
 func (a *Log) Sprint(v ...interface{}) string {
 	// Sprint doesn't put spaces between the arguments, add one for the prefix
-	return fmt.Sprint(append(a.buildPrefixArgs(), v...)...)
+	var prefixArgs []interface{}
+	prefix := a.prefix()
+	if prefix != "" {
+		prefixArgs = []interface{}{prefix, " "}
+	}
+
+	return fmt.Sprint(append(prefixArgs, v...)...)
 }
 
 func (a *Log) Sprintf(f string, v ...interface{}) string {
@@ -71,7 +77,13 @@ func (a *Log) Sprintf(f string, v ...interface{}) string {
 }
 
 func (a *Log) Sprintln(v ...interface{}) string {
-	return fmt.Sprintln(append(a.buildPrefixArgs(), v...)...)
+	var prefixArgs []interface{}
+	prefix := a.prefix()
+	if prefix != "" {
+		prefixArgs = []interface{}{prefix}
+	}
+
+	return fmt.Sprintln(append(prefixArgs, v...)...)
 }
 
 func (a *Log) Fatal(v ...interface{}) {
@@ -138,15 +150,6 @@ func (a *Log) addPrefix(s string) string {
 		return prefix + " " + s
 	}
 	return s
-}
-
-// Returns the prefix as interface args for prepending in a Print() call
-func (a *Log) buildPrefixArgs() []interface{} {
-	prefix := a.prefix()
-	if prefix != "" {
-		return []interface{}{prefix, " "}
-	}
-	return nil
 }
 
 ////////////////////////////////////////////////

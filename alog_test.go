@@ -140,3 +140,16 @@ func (s *Suite) TestLog(c *check.C) {
 	log.Print("foo")
 	c.Assert(t.last(), check.Matches, `\d{4}/\d\d/\d\d \d\d:\d\d:\d\d foo\n`)
 }
+
+func (s *Suite) TestPrintln(c *check.C) {
+	t := &Thief{}
+	log := New(t)
+	log.SetFlags(0)
+
+	log.Println("foo", "bar")
+	checkLast(c, t, "foo bar")
+
+	log.Set("foo", "bar")
+	log.Println("foo", "bar")
+	checkLast(c, t, "[foo=bar] foo bar")
+}
